@@ -8,6 +8,9 @@ import guru.springframework.msscbeerservice.web.model.BeerDto;
 import guru.springframework.msscbeerservice.web.model.BeerPagedList;
 import guru.springframework.msscbeerservice.web.model.BeerStyleEnum;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,14 +25,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class BeerServiceImpl implements BeerService {
+    private static final Logger log = LoggerFactory.getLogger(BeerServiceImpl.class);
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
-
+    @Cacheable(cacheNames = "beerListCache", condition = "#showInventoryOnHand == false ")
     @Override
-    public BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, boolean shwoInventoryOnHand, PageRequest pageRequest) {
+    public BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, Boolean showInventoryOnHand, PageRequest pageRequest) {
         BeerPagedList beerPagedList;
         Page<Beer> beerPage;
-
+        System.out.println("i was called");
         if (!StringUtils.isEmpty(beerName) && !StringUtils.isEmpty(beerStyle)) {
             //search both
             beerPage = beerRepository.findAllByBeerNameAndBeerStyle(beerName, beerStyle, pageRequest);
@@ -43,7 +47,7 @@ public class BeerServiceImpl implements BeerService {
             beerPage = beerRepository.findAll(pageRequest);
         }
 
-        if(!shwoInventoryOnHand) {
+        if(!showInventoryOnHand) {
             beerPagedList = new BeerPagedList(beerPage
                     .getContent()
                     .stream()
@@ -71,12 +75,20 @@ public class BeerServiceImpl implements BeerService {
 
 
     }
-
+    @Cacheable(cacheNames = "beerCache", key = "#beerId",condition="#showInventoryOnHand")
     @Override
-    public BeerDto getById(UUID beerId) {
-        return beerMapper.beerToBeerDto(
-                beerRepository.findById(beerId).orElseThrow(NotFoundException::new)
-        );
+    public BeerDto getById(UUID beerId, Boolean showInventoryOnHand) {
+
+        if (!showInventoryOnHand) {
+            return beerMapper.beerToBeerDtoWithoutInventory(
+                    beerRepository.findById(beerId).orElseThrow(NotFoundException::new)
+            );
+        }else {
+            return beerMapper.beerToBeerDto(
+                    beerRepository.findById(beerId).orElseThrow(NotFoundException::new)
+            );
+        }
+
     }
 
     @Override
