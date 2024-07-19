@@ -2,6 +2,7 @@ package guru.springframework.msscbeerservice.services;
 
 import guru.springframework.msscbeerservice.domain.Beer;
 import guru.springframework.msscbeerservice.repositories.BeerRepository;
+import guru.springframework.msscbeerservice.repositories.BeerUpcRepository;
 import guru.springframework.msscbeerservice.web.controller.NotFoundException;
 import guru.springframework.msscbeerservice.web.mappers.BeerMapper;
 import guru.springframework.msscbeerservice.web.model.BeerDto;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class BeerServiceImpl implements BeerService {
     private static final Logger log = LoggerFactory.getLogger(BeerServiceImpl.class);
     private final BeerRepository beerRepository;
+    private final BeerUpcRepository beerUpcRepository;
     private final BeerMapper beerMapper;
     @Cacheable(cacheNames = "beerListCache", condition = "#showInventoryOnHand == false ")
     @Override
@@ -89,6 +91,12 @@ public class BeerServiceImpl implements BeerService {
             );
         }
 
+    }
+    @Cacheable(cacheNames = "beerUpcCache", key = "#upc")
+    @Override
+    public BeerDto getByUpc(String upc) {
+
+        return beerMapper.beerToBeerDto(beerUpcRepository.findByUpc(upc));
     }
 
     @Override
