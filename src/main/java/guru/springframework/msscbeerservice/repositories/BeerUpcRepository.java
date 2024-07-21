@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BeerUpcRepository extends JpaRepository<Beer,String> {
 
-    Beer findByUpc (String upc);
+ //   Beer findByUpc (String upc);
 }

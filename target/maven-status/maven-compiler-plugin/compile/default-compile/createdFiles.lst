@@ -1,5 +1,6 @@
 guru\springframework\msscbeerservice\bootstrap\BeerLoader.class
 guru\springframework\msscbeerservice\web\controller\NotFoundException.class
+guru\springframework\msscbeerservice\config\CacheConfig.class
 guru\springframework\msscbeerservice\services\inventory\BeerInventoryServiceRestTemplateImpl.class
 guru\springframework\msscbeerservice\web\model\BeerDto.class
 guru\springframework\msscbeerservice\web\mappers\BeerMapperDecorator.class
@@ -16,6 +17,7 @@ guru\springframework\msscbeerservice\services\BeerService.class
 guru\springframework\msscbeerservice\web\model\BeerStyleEnum.class
 guru\springframework\msscbeerservice\services\BeerServiceImpl.class
 guru\springframework\msscbeerservice\repositories\BeerRepository.class
+guru\springframework\msscbeerservice\repositories\BeerUpcRepository.class
 guru\springframework\msscbeerservice\domain\Beer$BeerBuilder.class
 guru\springframework\msscbeerservice\services\inventory\BeerInventoryServiceRestTemplateImpl$1.class
 guru\springframework\msscbeerservice\web\mappers\DateMapper.class
